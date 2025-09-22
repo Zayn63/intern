@@ -29,7 +29,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/strapi:${{ steps.set_tag.outputs.tag }} .
+         docker buildx build -t ${{ secrets.DOCKER_USERNAME }}/strapi:${{ steps.set_tag.outputs.tag }} .
+
 
       - name: Push Docker image
         run: |
