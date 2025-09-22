@@ -27,7 +27,7 @@ jobs:
 
       - name: Terraform Plan
         run: terraform -chdir=terraform plan -input=false -out=tfplan \
-          -var "docker_image=${{ secrets.DOCKER_USERNAME }}/strapi:${{ env.image_tag }}"
+         -var "docker_image=${{ secrets.DOCKER_USERNAME }}/strapi:${{ env.image_tag }}"
 
       - name: Terraform Apply
         run: terraform -chdir=terraform apply -input=false -auto-approve tfplan
