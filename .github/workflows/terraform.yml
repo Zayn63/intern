@@ -1,21 +1,14 @@
-name: CD - Deploy Strapi on EC2
-
-on:
-  workflow_dispatch:
-
 jobs:
-  deploy:
+  terraform:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v3
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.6.7
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -23,11 +16,10 @@ jobs:
           aws-region: ap-south-1
 
       - name: Terraform Init
-        run: terraform -chdir=terraform init -input=false
+        run: terraform init
 
       - name: Terraform Plan
-        run: terraform -chdir=terraform plan -input=false -out=tfplan \
-         -var "docker_image=${{ secrets.DOCKER_USERNAME }}/strapi:${{ env.image_tag }}"
+        run: terraform plan
 
       - name: Terraform Apply
-        run: terraform -chdir=terraform apply -input=false -auto-approve tfplan
+        run: terraform apply -auto-approve
