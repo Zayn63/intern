@@ -1,7 +1,7 @@
 name: CD - Deploy Strapi with Terraform
 
 on:
-  workflow_dispatch: # run manually
+  workflow_dispatch:
 
 jobs:
   terraform:
@@ -9,27 +9,22 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ap-south-1  # change if needed
+      AWS_DEFAULT_REGION: ap-south-1
 
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.7.5
 
-      # Step 3: Terraform Init
       - name: Terraform Init
         run: terraform -chdir=task5_terraform init
 
-      # Step 4: Terraform Plan
       - name: Terraform Plan
         run: terraform -chdir=task5_terraform plan -out=tfplan
 
-      # Step 5: Terraform Apply
       - name: Terraform Apply
         run: terraform -chdir=task5_terraform apply -auto-approve tfplan
