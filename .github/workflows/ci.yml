@@ -28,12 +28,7 @@ jobs:
         run: echo "::set-output name=tag::$(date +'%Y%m%d%H%M%S')"
         
       - name: Build and push Docker image
-        run: |
-         docker buildx build \
-         --file ./my-strapi-app/Dockerfile \
-         -t ${{ secrets.DOCKER_USERNAME }}/strapi:${{ steps.set_tag.outputs.tag }} \
-         --push \
-         my-strapi-app
+        run: docker buildx build --file my-strapi-app/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/strapi:${{ steps.set_tag.outputs.tag }} --push my-strapi-app
 
       - name: Push Docker image
         run: |
