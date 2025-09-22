@@ -33,7 +33,7 @@ jobs:
          --file ./my-strapi-app/Dockerfile \
          -t ${{ secrets.DOCKER_USERNAME }}/strapi:${{ steps.set_tag.outputs.tag }} \
          --push \
-         ./my-strapi-app
+         my-strapi-app
 
       - name: Push Docker image
         run: |
