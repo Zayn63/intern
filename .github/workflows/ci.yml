@@ -26,11 +26,10 @@ jobs:
       - name: Set image tag
         id: set_tag
         run: echo "::set-output name=tag::$(date +'%Y%m%d%H%M%S')"
-
+        
       - name: Build Docker image
         run: |
-         docker buildx build -t ${{ secrets.DOCKER_USERNAME }}/strapi:${{ steps.set_tag.outputs.tag }} .
-
+         docker buildx build -t ${{ secrets.DOCKER_USERNAME }}/strapi:${{ steps.set_tag.outputs.tag }} ./my-strapi-app
 
       - name: Push Docker image
         run: |
