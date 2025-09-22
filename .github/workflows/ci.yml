@@ -34,7 +34,6 @@ jobs:
          -t ${{ secrets.DOCKER_USERNAME }}/strapi:${{ steps.set_tag.outputs.tag }} \
          --push \
          ./my-strapi-app
-p
 
       - name: Push Docker image
         run: |
