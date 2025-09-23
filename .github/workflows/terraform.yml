@@ -1,32 +1,26 @@
-name: CD - Deploy with Terraform
+name: CD - Deploy Strapi with Terraform
 
 on:
   workflow_dispatch:
+    inputs:
+      docker_image:
+        description: "Docker image tag (from CI pipeline)"
+        required: true
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: ap-south-1
 
     steps:
-      # 1️⃣ Checkout your repository
+      # 1️⃣ Checkout repo
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      # 2️⃣ Debug: list files to ensure task5_terraform exists
+      # 2️⃣ Debug files
       - name: Show repo files
         run: ls -R
 
-      # 3️⃣ Setup Terraform
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.8.5
-
-      # 4️⃣ Configure AWS CLI (ensures credentials are exported)
+      # 3️⃣ Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -34,15 +28,21 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
 
+      # 4️⃣ Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.5
+
       # 5️⃣ Terraform Init
       - name: Terraform Init
         working-directory: ./task5_terraform
         run: terraform init
 
-      # 6️⃣ Terraform Plan using terraform.tfvars
+      # 6️⃣ Terraform Plan
       - name: Terraform Plan
         working-directory: ./task5_terraform
-        run: terraform plan -out=tfplan -var-file="terraform.tfvars"
+        run: terraform plan -out=tfplan -var="docker_image=${{ github.event.inputs.docker_image }}"
 
       # 7️⃣ Terraform Apply
       - name: Terraform Apply
