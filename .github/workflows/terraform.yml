@@ -10,9 +10,13 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ap-south-1
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+
+      - name: Show repo files
+        run: ls -R
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
