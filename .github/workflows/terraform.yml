@@ -16,11 +16,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      # 2️⃣ Debug files
-      - name: Show repo files
-        run: ls -R
-
-      # 3️⃣ Configure AWS credentials
+      # 2️⃣ Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -28,32 +24,31 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
 
-      # 4️⃣ Setup Terraform
+      # 3️⃣ Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.8.5
 
-      # 5️⃣ Terraform Init
+      # 4️⃣ Terraform Init
       - name: Terraform Init
         working-directory: ./task5_terraform
-        run: terraform init
-              # 6️⃣ Terraform Plan + Apply in one go (fresh)
-      - name: Terraform Plan & Apply
+        run: terraform init -upgrade
+
+      # 5️⃣ Clean old plan & state
+      - name: Clean old plan and state
         working-directory: ./task5_terraform
         run: |
-          # Remove old plan if exists
           rm -f tfplan
-          rm -rf .terraform terraform.tfstate*
+          rm -f terraform.tfstate*
+          rm -rf .terraform
 
-          # Initialize Terraform
-          terraform init -upgrade
+      # 6️⃣ Terraform Plan
+      - name: Terraform Plan
+        working-directory: ./task5_terraform
+        run: terraform plan -out=tfplan -var="docker_image=${{ github.event.inputs.docker_image }}"
 
-          # Create a fresh plan
-          terraform plan -out=tfplan -var="docker_image=${{ github.event.inputs.docker_image }}"
-
-          # Apply the fresh plan
-          terraform apply -auto-approve tfplan
-
-
-     
+      # 7️⃣ Terraform Apply
+      - name: Terraform Apply
+        working-directory: ./task5_terraform
+        run: terraform apply -auto-approve tfplan
