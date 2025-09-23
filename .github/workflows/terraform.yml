@@ -26,17 +26,25 @@ jobs:
         with:
           terraform_version: 1.8.5
 
-      # 4️⃣ Terraform Init
+      # 4️⃣ Configure AWS CLI (ensures credentials are exported)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      # 5️⃣ Terraform Init
       - name: Terraform Init
         working-directory: ./task5_terraform
         run: terraform init
 
-      # 5️⃣ Terraform Plan using terraform.tfvars
+      # 6️⃣ Terraform Plan using terraform.tfvars
       - name: Terraform Plan
         working-directory: ./task5_terraform
         run: terraform plan -out=tfplan -var-file="terraform.tfvars"
 
-      # 6️⃣ Terraform Apply
+      # 7️⃣ Terraform Apply
       - name: Terraform Apply
         working-directory: ./task5_terraform
         run: terraform apply -auto-approve tfplan
