@@ -1,5 +1,5 @@
 resource "aws_instance" "zconviction" {
-  ami           = "ami-02d26659fd82cf299"
+  ami           = "ami-02d26659fd82cf299"  # Ubuntu 24.04 LTS
   instance_type = "t2.micro"
   key_name      = "zayn-key"
   subnet_id     = "subnet-086c3ae98cdde3671"
