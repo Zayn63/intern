@@ -38,19 +38,22 @@ jobs:
       - name: Terraform Init
         working-directory: ./task5_terraform
         run: terraform init
-
-      # 6️⃣ Remove any old plan
-      - name: Clean old plan
+              # 6️⃣ Terraform Plan + Apply in one go (fresh)
+      - name: Terraform Plan & Apply
         working-directory: ./task5_terraform
-        run: rm -f tfplan
+        run: |
+          # Remove old plan if exists
+          rm -f tfplan
+          rm -rf .terraform terraform.tfstate*
 
-      # 7️⃣ Terraform Plan (fresh every run)
-      - name: Terraform Plan
-        working-directory: ./task5_terraform
-        run: terraform plan -out=tfplan \
-          -var="docker_image=${{ github.event.inputs.docker_image }}"
+          # Initialize Terraform
+          terraform init -upgrade
 
-      # 8️⃣ Terraform Apply
-      - name: Terraform Apply
-        working-directory: ./task5_terraform
-        run: terraform apply -auto-approve tfplan
+          # Create a fresh plan
+          terraform plan -out=tfplan -var="docker_image=${{ github.event.inputs.docker_image }}"
+
+          # Apply the fresh plan
+          terraform apply -auto-approve tfplan
+
+
+     
