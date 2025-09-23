@@ -39,12 +39,27 @@ jobs:
         working-directory: ./task5_terraform
         run: terraform init
 
-      # 6️⃣ Terraform Plan
+      # 6️⃣ Optional: Clean old Terraform state to avoid AMI issues
+      - name: Clean Terraform State
+        working-directory: ./task5_terraform
+        run: |
+          rm -f terraform.tfstate*
+
+      # 7️⃣ Terraform Plan
       - name: Terraform Plan
         working-directory: ./task5_terraform
-        run: terraform plan -out=tfplan -var="docker_image=${{ github.event.inputs.docker_image }}"
+        run: terraform plan -out=tfplan \
+          -var="docker_image=${{ github.event.inputs.docker_image }}" \
+          -var="ami=ami-02d26659fd82cf299"
 
-      # 7️⃣ Terraform Apply
+      # 8️⃣ Taint EC2 Instance (force recreation)
+      - name: Taint EC2 Instance
+        working-directory: ./task5_terraform
+        run: |
+          terraform init
+          terraform taint aws_instance.zconviction || true
+
+      # 9️⃣ Terraform Apply
       - name: Terraform Apply
         working-directory: ./task5_terraform
         run: terraform apply -auto-approve tfplan
