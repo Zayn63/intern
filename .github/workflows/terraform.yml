@@ -12,25 +12,31 @@ jobs:
       AWS_DEFAULT_REGION: ap-south-1
 
     steps:
+      # 1️⃣ Checkout your repository
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      # 2️⃣ Debug: list files to ensure task5_terraform exists
       - name: Show repo files
         run: ls -R
 
+      # 3️⃣ Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.8.5
 
+      # 4️⃣ Terraform Init
       - name: Terraform Init
         working-directory: ./task5_terraform
         run: terraform init
 
+      # 5️⃣ Terraform Plan
       - name: Terraform Plan
         working-directory: ./task5_terraform
-        run: terraform plan -out=tfplan
+        run: terraform plan -out=tfplan -var="docker_image=${{ secrets.DOCKER_USERNAME }}/strapi:latest"
 
+      # 6️⃣ Terraform Apply
       - name: Terraform Apply
         working-directory: ./task5_terraform
         run: terraform apply -auto-approve tfplan
