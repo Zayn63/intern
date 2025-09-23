@@ -31,12 +31,11 @@ jobs:
         working-directory: ./task5_terraform
         run: terraform init
 
-      # 5️⃣ Terraform Plan
       - name: Terraform Plan
         working-directory: ./task5_terraform
-        run: terraform plan -out=tfplan -var="docker_image=${{ secrets.DOCKER_USERNAME }}/strapi:latest"
+        run: terraform plan -out=tfplan -var="docker_image=zayn63/strapi:latest"
 
-      # 6️⃣ Terraform Apply
       - name: Terraform Apply
         working-directory: ./task5_terraform
         run: terraform apply -auto-approve tfplan
+
